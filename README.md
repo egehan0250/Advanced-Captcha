@@ -9,7 +9,7 @@ Advanced Captcha JavaScript
 
 Added features compared to other Basic-Captcha:
 
-- More Secure, Code are now saved and checked in LocalStroge.
+- More Secure, Code are now Encrypted with Crypto-js and saved in LocalStroge
 - Wait Time, if there are more than 5 incorrect attempts, the system now blocks and offers a waiting time of 5 minutes.
 - Security Picture, A More Complex Picture.
 - Page Layout, Fixed incorrect CSS.
