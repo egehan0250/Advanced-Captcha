@@ -1,6 +1,26 @@
 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 const captchaLength = 6;
 
+function encryptAES(text, key) {
+  const encrypted = CryptoJS.AES.encrypt(text, key);
+  return encrypted.toString();
+}
+
+function decryptAES(encryptedText, key) {
+  const decrypted = CryptoJS.AES.decrypt(encryptedText, key);
+  return decrypted.toString(CryptoJS.enc.Utf8);
+}
+
+function generateSecretKey(length) {
+  const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let secretKey = "";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    secretKey += charset[randomIndex];
+  }
+  return secretKey;
+}
+
 function generateCaptchaText() {
   let captchaText = '';
   for (let i = 0; i < captchaLength; i++) {
@@ -44,11 +64,14 @@ function updateCaptcha(status) {
   console.log(status);
 if(status == 'standart'){
   const captchaText = generateCaptchaText();
+  const secretKey = generateSecretKey(32);
+  const encryptedText = encryptAES(captchaText, secretKey);
   const captchaImage = createCaptchaImage(captchaText);
 
   const captchaImageElement = document.getElementById('captcha-image');
   captchaImageElement.innerHTML = `<img src="${captchaImage}">`;
-  localStorage.setItem('captcha', captchaText);
+  localStorage.setItem('captcha', encryptedText);
+  localStorage.setItem('secretKey', secretKey);
 } else if(status == 'stop'){
   const captchaText = "don't"
   const captchaImage = createCaptchaImage(captchaText);
@@ -62,7 +85,10 @@ if(status == 'standart'){
 function checkCaptcha() {
     const userInput = document.getElementById('userInput').value;
     const captchaText = localStorage.getItem('captcha');
-    if (userInput === captchaText) {
+    const secretKey = localStorage.getItem('secretKey');
+    const decryptAES = CryptoJS.AES.decrypt(captchaText, secretKey);
+    const decryptedText = decryptAES.toString(CryptoJS.enc.Utf8);
+    if (userInput === decryptedText) {
       captchaVerification(true);
     } else {
       captchaVerification(false);
@@ -169,6 +195,7 @@ function captchaVerification(status) {
     localStorage.removeItem('captcha');
     localStorage.removeItem('IncorrectTry');
     localStorage.removeItem('countDownDate');
+    localStorage.removeItem('secretKey');
     document.getElementById('userInput').disabled = true;
     document.getElementById('userInput').value = '';
     var verifyButton = document.getElementById('verifyButton');
@@ -211,3 +238,4 @@ if(IncorrectTry >= 5){
   verifyButton.classList.add('buttonActive');
   updateCaptcha('standart'); 
 }
+
