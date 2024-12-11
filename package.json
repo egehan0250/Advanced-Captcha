@@ -1,12 +1,21 @@
 {
   "name": "advancedcaptcha",
-  "version": "1.1.0",
+  "version": "2.0",
   "description": "",
-  "main": "captcha.js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "egehan0250",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "crypto": "^1.0.1",
+    "dayjs": "^1.11.13",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.4.1",
+    "svg-captcha": "^1.4.0"
+  }
 }
